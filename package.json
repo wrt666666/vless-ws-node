@@ -1,0 +1,17 @@
+{
+  "name": "vless-ws-node",
+  "version": "1.0.0",
+  "description": "Node.js VLESS + WebSocket proxy server (for testing / Host-Ship deploy)",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "gen": "node gen-keypair.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

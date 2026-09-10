@@ -1,0 +1,12 @@
+node_modules/
+npm-debug.log*
+package-lock.json
+server.log
+test_server.log
+.env
+*.pem
+*.key
+*.crt
+*.cer
+.DS_Store
+Thumbs.db
