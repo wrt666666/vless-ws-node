@@ -33,7 +33,8 @@ const crypto = require('crypto');
 const { WebSocketServer } = require('ws');
 
 // ============ 配置 ============
-const PORT = parseInt(process.env.WS_PORT || '8443', 10);
+// 端口优先级: PORT (Pterodactyl/Render/Fly 等 PaaS 注入) > WS_PORT (手动指定) > 43987
+const PORT = parseInt(process.env.PORT || process.env.WS_PORT || '43987', 10);
 const PATH = process.env.WS_PATH || '/vless-node';
 const BIND = process.env.BIND || '0.0.0.0';
 
@@ -121,11 +122,7 @@ function parseVlessRequest(buf, proto) {
   if (buf.length < ipOffset + ipLen + 2) return null;
 
   const ipAddr = buf.subarray(ipOffset, ipOffset + ipLen).toString('hex');
-  const ip = ipVer === 1 ? ipAddr.match(/../g).join('.') :
-                      ipAddr.match(/../g).map((h, i) => {
-                        // 4 组 -> 8 组, IPv6 简写
-                        return h;
-                      }).join(':');
+  const ip = ipVer === 1 ? ipAddr.match(/../g).join('.') : ipv6Short(ipAddr);
   const port = buf.readUInt16BE(ipOffset + ipLen);
   const cmd = buf[ipOffset + ipLen + 2];
   if (cmd !== 1) return null;
