@@ -9,13 +9,14 @@
  * 客户端需要:
  *   - VLESS UUID:  从 gen-keypair.js 输出
  *   - 服务器地址:   你的域名或 IP
- *   - 端口:        8443 (或配置 WS_PORT)
+ *   - 端口:        43987 (或配置 PORT / WS_PORT)
  *   - 传输:        ws
  *   - TLS:         如前面有 Cloudflare 橙云则不需要本地 TLS
  *   - WS Path:     默认 /vless-node
  *
  * 环境变量 (可选):
- *   WS_PORT     监听端口 (默认 8443)
+ *   PORT        监听端口 (PaaS 注入优先, 例如 Pterodactyl/Render)
+ *   WS_PORT     监听端口 (默认 43987)
  *   WS_PATH     WebSocket 路径 (默认 /vless-node)
  *   BIND        绑定地址 (默认 0.0.0.0)
  *   TLS_CERT    TLS 证书路径 (可选, 例如 ./cert.pem)
