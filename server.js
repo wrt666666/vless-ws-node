@@ -30,8 +30,42 @@ const http = require('http');
 const https = require('https');
 const net = require('net');
 const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
 const { WebSocketServer } = require('ws');
+
+// ============ 加载 .env 文件 ============
+// Pterodactyl / Render / Fly 等平台把环境变量写进 .env，
+// Node.js 不会自动读，这里手动加载 (零依赖)。
+// 优先级: 已存在的环境变量 > .env 文件 (不覆盖系统注入)
+(function loadEnv() {
+  const candidates = [
+    path.resolve(process.cwd(), '.env'),
+    path.resolve(__dirname, '.env'),
+  ];
+  for (const file of candidates) {
+    let content;
+    try { content = fs.readFileSync(file, 'utf8'); }
+    catch (e) { continue; }
+    for (const rawLine of content.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eq = line.indexOf('=');
+      if (eq < 1) continue;
+      let key = line.slice(0, eq).trim();
+      let val = line.slice(eq + 1).trim();
+      // 去引号
+      if ((val.startsWith('"') && val.endsWith('"')) ||
+          (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      // 不覆盖已有值
+      if (key && !(key in process.env)) {
+        process.env[key] = val;
+      }
+    }
+  }
+})();
 
 // ============ 配置 ============
 // 端口优先级: PORT (Pterodactyl/Render/Fly 等 PaaS 注入) > WS_PORT (手动指定) > 43987
